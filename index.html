@@ -4,15 +4,127 @@
   <meta charset="UTF-8">
   <title>我的歌單</title>
   <style>
-    body { font-family: Arial, sans-serif; display: flex; margin: 0; }
-    .container { flex: 1; padding: 20px; }
-    #song-list div { cursor: pointer; padding: 5px; border-bottom: 1px solid #ccc; }
-    #song-list div.selected { background-color: #d0f0d0; }
-    #playlist { width: 250px; border-left: 2px solid #ccc; padding: 20px; }
-    #playlist h2 { margin-top: 0; }
-    .playlist-item { cursor: pointer; padding: 5px; border-bottom: 1px solid #aaa; }
-    .tags span { display: inline-block; margin: 2px; padding: 2px 6px; background: #eee; border-radius: 4px; cursor: pointer; }
-    #search { width: 100%; padding: 5px; margin-bottom: 10px; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #f7f9fc;
+      color: #333;
+      display: flex;
+      height: 100vh;
+    }
+
+    /* 左側主容器 */
+    .container {
+      flex: 1;
+      padding: 20px 40px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 搜尋欄 */
+    #search {
+      width: 100%;
+      padding: 10px 15px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    #search:focus {
+      border-color: #0078d7;
+      box-shadow: 0 0 4px rgba(0, 120, 215, 0.3);
+    }
+
+    /* 標籤 */
+    #tag-filter {
+      margin-bottom: 20px;
+    }
+    #tag-filter span {
+      display: inline-block;
+      background: #e9eef5;
+      margin: 5px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    #tag-filter span:hover {
+      background: #d0e4ff;
+    }
+    #tag-filter span.active {
+      background: #0078d7;
+      color: white;
+    }
+
+    /* 歌曲列表 */
+    #song-list {
+      flex: 1;
+      overflow-y: auto;
+      border-top: 1px solid #ddd;
+      margin-top: 10px;
+    }
+    #song-list div {
+      padding: 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+      transition: all 0.2s;
+    }
+    #song-list div:hover {
+      background: #f0f8ff;
+    }
+    #song-list div.selected {
+      background: #d0f0d0;
+      font-weight: bold;
+    }
+
+    /* 右側暫存名單 */
+    #playlist {
+      width: 300px;
+      background: #ffffff;
+      border-left: 1px solid #ddd;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
+    }
+    #playlist h2 {
+      margin-top: 0;
+      font-size: 18px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 8px;
+      color: #444;
+    }
+    #playlist-items {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+    .playlist-item {
+      padding: 8px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .playlist-item:hover {
+      background: #ffeaea;
+    }
+
+    /* 複製按鈕 */
+    #copy-button {
+      padding: 10px;
+      background: #0078d7;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #copy-button:hover {
+      background: #005fa3;
+    }
   </style>
 </head>
 <body>
@@ -21,6 +133,7 @@
     <div id="tag-filter"></div>
     <div id="song-list"></div>
   </div>
+
   <div id="playlist">
     <h2>暫存名單</h2>
     <div id="playlist-items"></div>
@@ -33,7 +146,6 @@
     let selectedSongs = [];
     let selectedTags = [];
 
-    // 讀取 songs.json
     fetch('songs.json')
       .then(response => response.json())
       .then(data => {
@@ -48,7 +160,6 @@
     const searchEl = document.getElementById('search');
     const tagFilterEl = document.getElementById('tag-filter');
 
-    // 渲染歌曲
     function renderSongs() {
       songListEl.innerHTML = '';
       filteredSongs.forEach(song => {
@@ -60,20 +171,18 @@
       });
     }
 
-    // 渲染標籤
     function renderTags() {
       const tags = [...new Set(allSongs.flatMap(song => song.tags))];
       tagFilterEl.innerHTML = '';
       tags.forEach(tag => {
         const span = document.createElement('span');
         span.textContent = tag;
+        if (selectedTags.includes(tag)) span.classList.add('active');
         span.onclick = () => toggleTag(tag);
-        if (selectedTags.includes(tag)) span.style.background = '#b0e0ff';
         tagFilterEl.appendChild(span);
       });
     }
 
-    // 搜尋
     searchEl.addEventListener('input', () => {
       const keyword = searchEl.value.toLowerCase();
       filteredSongs = allSongs.filter(song =>
@@ -84,7 +193,6 @@
       renderSongs();
     });
 
-    // 點標籤篩選
     function toggleTag(tag) {
       if (selectedTags.includes(tag)) {
         selectedTags = selectedTags.filter(t => t !== tag);
@@ -104,7 +212,6 @@
       }
     }
 
-    // 選歌
     function toggleSong(song) {
       const index = selectedSongs.indexOf(song);
       if (index === -1) {
@@ -116,7 +223,6 @@
       renderPlaylist();
     }
 
-    // 渲染暫存名單
     function renderPlaylist() {
       playlistEl.innerHTML = '';
       selectedSongs.forEach(song => {
@@ -128,7 +234,6 @@
       });
     }
 
-    // 複製暫存名單
     document.getElementById('copy-button').onclick = () => {
       const text = selectedSongs.map(song => `${song.title} - ${song.artist}`).join('\n');
       navigator.clipboard.writeText(text).then(() => alert('已複製到剪貼簿！'));
