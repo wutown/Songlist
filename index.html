@@ -2,21 +2,83 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <title>James 的歌單</title>
+  <title>我的歌單</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
-    #searchBar { width: 300px; padding: 8px; }
-    .tag { display: inline-block; margin: 5px; padding: 5px 10px; background: #eee; border-radius: 5px; cursor: pointer; }
+    .tag { 
+      display: inline-block; 
+      background: #eee; 
+      padding: 5px 10px; 
+      margin: 2px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
     .tag.active { background: #007BFF; color: white; }
-    .song { margin: 10px 0; }
+    #song-list li { margin: 5px 0; }
   </style>
 </head>
 <body>
-  <h1>James 的歌單</h1>
-  <input type="text" id="searchBar" placeholder="搜尋歌曲或歌手...">
-  <div id="tags"></div>
-  <div id="songs"></div>
 
-  <script src="songs.js"></script>
+  <h1>🎵 我的歌單</h1>
+
+  <input type="text" id="search" placeholder="搜尋歌曲或歌手...">
+  <div id="tag-container"></div>
+  <ul id="song-list"></ul>
+
+  <script src="songs.js?v=1"></script>
+  <script>
+    const songList = document.getElementById("song-list");
+    const searchInput = document.getElementById("search");
+    const tagContainer = document.getElementById("tag-container");
+
+    let selectedTag = null;
+
+    // 取得所有標籤
+    const allTags = [...new Set(songs.flatMap(song => song.tags))];
+
+    // 渲染標籤
+    function renderTags() {
+      tagContainer.innerHTML = "";
+      allTags.forEach(tag => {
+        const span = document.createElement("span");
+        span.textContent = tag;
+        span.classList.add("tag");
+        span.addEventListener("click", () => {
+          if (selectedTag === tag) {
+            selectedTag = null;
+          } else {
+            selectedTag = tag;
+          }
+          renderTags();
+          renderSongs();
+        });
+        if (selectedTag === tag) span.classList.add("active");
+        tagContainer.appendChild(span);
+      });
+    }
+
+    // 渲染歌曲
+    function renderSongs() {
+      const searchText = searchInput.value.toLowerCase();
+      songList.innerHTML = "";
+
+      songs
+        .filter(song => 
+          (!selectedTag || song.tags.includes(selectedTag)) &&
+          (song.title.toLowerCase().includes(searchText) || song.artist.toLowerCase().includes(searchText))
+        )
+        .forEach(song => {
+          const li = document.createElement("li");
+          li.textContent = `${song.title} - ${song.artist} [${song.tags.join(", ")}]`;
+          songList.appendChild(li);
+        });
+    }
+
+    searchInput.addEventListener("input", renderSongs);
+
+    renderTags();
+    renderSongs();
+  </script>
+
 </body>
 </html>
