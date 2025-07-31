@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>James 的歌單</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #searchBar { width: 300px; padding: 8px; }
+    .tag { display: inline-block; margin: 5px; padding: 5px 10px; background: #eee; border-radius: 5px; cursor: pointer; }
+    .tag.active { background: #007BFF; color: white; }
+    .song { margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>James 的歌單</h1>
+  <input type="text" id="searchBar" placeholder="搜尋歌曲或歌手...">
+  <div id="tags"></div>
+  <div id="songs"></div>
+
+  <script src="songs.js"></script>
+</body>
+</html>
