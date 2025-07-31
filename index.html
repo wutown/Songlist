@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <title>我的歌單</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
+    body { font-family: Arial, sans-serif; margin: 20px; display: flex; gap: 30px; }
+    .left-panel { flex: 2; }
+    .right-panel { flex: 1; border-left: 2px solid #ccc; padding-left: 20px; }
     .tag { 
       display: inline-block; 
       background: #eee; 
@@ -14,26 +16,37 @@
       cursor: pointer;
     }
     .tag.active { background: #007BFF; color: white; }
-    #song-list li { margin: 5px 0; }
+    #song-list li { margin: 5px 0; cursor: pointer; }
+    #temp-list li { margin: 5px 0; }
+    button { margin-top: 10px; padding: 5px 10px; cursor: pointer; }
   </style>
 </head>
 <body>
 
-  <h1>🎵 我的歌單</h1>
+  <div class="left-panel">
+    <h1>🎵 我的歌單</h1>
+    <input type="text" id="search" placeholder="搜尋歌曲或歌手...">
+    <div id="tag-container"></div>
+    <ul id="song-list"></ul>
+  </div>
 
-  <input type="text" id="search" placeholder="搜尋歌曲或歌手...">
-  <div id="tag-container"></div>
-  <ul id="song-list"></ul>
+  <div class="right-panel">
+    <h2>暫存名單</h2>
+    <ul id="temp-list"></ul>
+    <button id="copy-btn">複製名單</button>
+  </div>
 
-  <script src="songs.js?v=1"></script>
+  <script src="songs.js?v=2"></script>
   <script>
     const songList = document.getElementById("song-list");
     const searchInput = document.getElementById("search");
     const tagContainer = document.getElementById("tag-container");
+    const tempList = document.getElementById("temp-list");
+    const copyBtn = document.getElementById("copy-btn");
 
     let selectedTag = null;
+    const tempSongs = new Set();
 
-    // 取得所有標籤
     const allTags = [...new Set(songs.flatMap(song => song.tags))];
 
     // 渲染標籤
@@ -44,11 +57,7 @@
         span.textContent = tag;
         span.classList.add("tag");
         span.addEventListener("click", () => {
-          if (selectedTag === tag) {
-            selectedTag = null;
-          } else {
-            selectedTag = tag;
-          }
+          selectedTag = selectedTag === tag ? null : tag;
           renderTags();
           renderSongs();
         });
@@ -63,16 +72,50 @@
       songList.innerHTML = "";
 
       songs
-        .filter(song => 
+        .filter(song =>
           (!selectedTag || song.tags.includes(selectedTag)) &&
           (song.title.toLowerCase().includes(searchText) || song.artist.toLowerCase().includes(searchText))
         )
         .forEach(song => {
           const li = document.createElement("li");
-          li.textContent = `${song.title} - ${song.artist} [${song.tags.join(", ")}]`;
+          li.textContent = `${song.title} - ${song.artist}`;
+          li.addEventListener("click", () => toggleTempSong(song));
           songList.appendChild(li);
         });
     }
+
+    // 加入或移除暫存歌曲
+    function toggleTempSong(song) {
+      const key = `${song.title} - ${song.artist}`;
+      if (tempSongs.has(key)) {
+        tempSongs.delete(key);
+      } else {
+        tempSongs.add(key);
+      }
+      renderTempList();
+    }
+
+    // 渲染暫存名單
+    function renderTempList() {
+      tempList.innerHTML = "";
+      tempSongs.forEach(song => {
+        const li = document.createElement("li");
+        li.textContent = song;
+        li.addEventListener("click", () => {
+          tempSongs.delete(song);
+          renderTempList();
+        });
+        tempList.appendChild(li);
+      });
+    }
+
+    // 複製暫存名單
+    copyBtn.addEventListener("click", () => {
+      const text = Array.from(tempSongs).join("\n");
+      navigator.clipboard.writeText(text).then(() => {
+        alert("已複製到剪貼簿！");
+      });
+    });
 
     searchInput.addEventListener("input", renderSongs);
 
