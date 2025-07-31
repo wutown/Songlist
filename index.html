@@ -42,7 +42,13 @@
       background: #d0e7ff;
     }
     #temp-list li { 
-      margin: 5px 0; 
+      margin: 5px 0;
+      cursor: pointer;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+    #temp-list li:hover { 
+      background: #ffe0e0;
     }
     button { 
       margin-top: 10px; 
@@ -136,7 +142,6 @@
           const songText = `${song.title} - ${song.artist}`;
           li.textContent = songText;
 
-          // 如果已經加入暫存名單，反白
           if (tempSongs.has(songText)) {
             li.classList.add("selected");
           }
@@ -145,7 +150,7 @@
             if (!tempSongs.has(songText)) {
               tempSongs.add(songText);
               renderTempList();
-              renderSongs(); // 重新渲染反白
+              renderSongs();
               navigator.clipboard.writeText(songText).then(() => {
                 showToast(`已複製: ${songText}`);
               });
@@ -161,6 +166,11 @@
       tempSongs.forEach(song => {
         const li = document.createElement("li");
         li.textContent = song;
+        li.addEventListener("click", () => {
+          tempSongs.delete(song); // 移除歌曲
+          renderTempList();
+          renderSongs(); // 取消反白
+        });
         tempList.appendChild(li);
       });
     }
