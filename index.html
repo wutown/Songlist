@@ -4,21 +4,58 @@
   <meta charset="UTF-8">
   <title>我的歌單</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; display: flex; gap: 30px; }
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 0; 
+      padding: 20px;
+      display: flex; 
+      gap: 30px;
+    }
     .left-panel { flex: 2; }
-    .right-panel { flex: 1; border-left: 2px solid #ccc; padding-left: 20px; }
+    .right-panel { 
+      flex: 1; 
+      border-left: 2px solid #ccc; 
+      padding-left: 20px;
+    }
     .tag { 
       display: inline-block; 
       background: #eee; 
       padding: 5px 10px; 
-      margin: 2px;
-      border-radius: 5px;
-      cursor: pointer;
+      margin: 2px; 
+      border-radius: 5px; 
+      cursor: pointer; 
     }
-    .tag.active { background: #007BFF; color: white; }
-    #song-list li { margin: 5px 0; cursor: pointer; }
-    #temp-list li { margin: 5px 0; }
-    button { margin-top: 10px; padding: 5px 10px; cursor: pointer; }
+    .tag.active { 
+      background: #007BFF; 
+      color: white; 
+    }
+    #song-list li { 
+      margin: 5px 0; 
+      cursor: pointer; 
+    }
+    #song-list li:hover { 
+      text-decoration: underline; 
+    }
+    #temp-list li { 
+      margin: 5px 0; 
+    }
+    button { 
+      margin-top: 10px; 
+      padding: 5px 10px; 
+      cursor: pointer; 
+    }
+    /* Toast 提示 */
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      display: none;
+      z-index: 1000;
+    }
   </style>
 </head>
 <body>
@@ -33,23 +70,37 @@
   <div class="right-panel">
     <h2>暫存名單</h2>
     <ul id="temp-list"></ul>
-    <button id="copy-btn">複製名單</button>
+    <button id="copy-btn">複製暫存名單</button>
   </div>
 
-  <script src="songs.js?v=2"></script>
+  <div id="toast"></div>
+
   <script>
+    const songs = [
+      { title: "Chitty Chitty Bang Bang", artist: "Lee Hyori", tags: ["Kpop", "Energetic", "Female Vocal"] },
+      { title: "數到十", artist: "苦苦", tags: ["Mandopop", "Emotional", "Ballad"] },
+      { title: "小幸運", artist: "田馥甄", tags: ["Mandopop", "Female Vocal", "Romantic"] },
+      { title: "放屁歌", artist: "小瑜", tags: ["Mandopop", "Funny", "Female Vocal"] }
+    ];
+
     const songList = document.getElementById("song-list");
     const searchInput = document.getElementById("search");
     const tagContainer = document.getElementById("tag-container");
     const tempList = document.getElementById("temp-list");
     const copyBtn = document.getElementById("copy-btn");
+    const toast = document.getElementById("toast");
 
     let selectedTag = null;
     const tempSongs = new Set();
 
     const allTags = [...new Set(songs.flatMap(song => song.tags))];
 
-    // 渲染標籤
+    function showToast(message) {
+      toast.textContent = message;
+      toast.style.display = "block";
+      setTimeout(() => { toast.style.display = "none"; }, 1500);
+    }
+
     function renderTags() {
       tagContainer.innerHTML = "";
       allTags.forEach(tag => {
@@ -66,7 +117,6 @@
       });
     }
 
-    // 渲染歌曲
     function renderSongs() {
       const searchText = searchInput.value.toLowerCase();
       songList.innerHTML = "";
@@ -79,41 +129,31 @@
         .forEach(song => {
           const li = document.createElement("li");
           li.textContent = `${song.title} - ${song.artist}`;
-          li.addEventListener("click", () => toggleTempSong(song));
+          li.addEventListener("click", () => {
+            const songText = `${song.title} - ${song.artist}`;
+            tempSongs.add(songText);
+            renderTempList();
+            navigator.clipboard.writeText(songText).then(() => {
+              showToast(`已複製: ${songText}`);
+            });
+          });
           songList.appendChild(li);
         });
     }
 
-    // 加入或移除暫存歌曲
-    function toggleTempSong(song) {
-      const key = `${song.title} - ${song.artist}`;
-      if (tempSongs.has(key)) {
-        tempSongs.delete(key);
-      } else {
-        tempSongs.add(key);
-      }
-      renderTempList();
-    }
-
-    // 渲染暫存名單
     function renderTempList() {
       tempList.innerHTML = "";
       tempSongs.forEach(song => {
         const li = document.createElement("li");
         li.textContent = song;
-        li.addEventListener("click", () => {
-          tempSongs.delete(song);
-          renderTempList();
-        });
         tempList.appendChild(li);
       });
     }
 
-    // 複製暫存名單
     copyBtn.addEventListener("click", () => {
       const text = Array.from(tempSongs).join("\n");
       navigator.clipboard.writeText(text).then(() => {
-        alert("已複製到剪貼簿！");
+        showToast("已複製暫存名單！");
       });
     });
 
@@ -122,6 +162,5 @@
     renderTags();
     renderSongs();
   </script>
-
 </body>
 </html>
