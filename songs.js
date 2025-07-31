@@ -1,7 +1,8 @@
 const songs = [
   { title: "Chitty Chitty Bang Bang", artist: "Lee Hyori", tags: ["Kpop", "Energetic", "Female Vocal"] },
   { title: "數到十", artist: "苦苦", tags: ["Mandopop", "Emotional", "Ballad"] },
-  { title: "小幸運", artist: "田馥甄", tags: ["Mandopop", "Female Vocal", "Romantic"] }
+  { title: "小幸運", artist: "田馥甄", tags: ["Mandopop", "Female Vocal", "Romantic"] },
+  { title: "放屁歌", artist: "小瑜", tags: ["Mandopop", "Female Vocal", "Romantic"] }
 ];
 
 const searchBar = document.getElementById('searchBar');
