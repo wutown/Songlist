@@ -1,6 +1,6 @@
 [
-  { "title": "Chitty Chitty Bang Bang", "artist": "Lee Hyori", "tags": ["Kpop", "Energetic", "Female Vocal"] },
-  { "title": "數到十", "artist": "苦苦", "tags": ["Mandopop", "Emotional", "Ballad"] },
-  { "title": "小幸運", "artist": "田馥甄", "tags": ["Mandopop", "Female Vocal", "Romantic"] },
-  { "title": "放屁歌", "artist": "小瑜", "tags": ["Mandopop", "Funny", "Female Vocal"] }
+  { "title": "Chitty Chitty Bang Bang", "artist": "Lee Hyori", "tags": ["KPOP", "嗨歌", "女歌手"] },
+  { "title": "數到十", "artist": "苦苦", "tags": ["中文流行", "悲歌", "抒情"] },
+  { "title": "小幸運", "artist": "田馥甄", "tags": ["中文流行", "女歌手", "抒情"] },
+  { "title": "放屁歌", "artist": "小瑜", "tags": ["中文流行", "臭臭", "女歌手"] }
 ]
