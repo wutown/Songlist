@@ -87,32 +87,47 @@
       font-weight: bold;
     }
 
-    /* 右側暫存名單 */
+    /* 固定在畫面底部的暫存名單 */
     #playlist {
-      width: 300px;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
       background: #ffffff;
-      border-left: 1px solid #ddd;
-      padding: 20px;
+      border-top: 1px solid #ddd;
+      padding: 10px 20px;
       display: flex;
       flex-direction: column;
-      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
       color: #000;
+      z-index: 999;
     }
+
+    /* 標題縮小 */
     #playlist h2 {
-      margin-top: 0;
-      font-size: 18px;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 8px;
+      margin: 0;
+      font-size: 16px;
+      border-bottom: none;
+      padding-bottom: 4px;
       color: #444;
     }
+
+    /* 橫向排列暫存歌單 */
     #playlist-items {
-      flex: 1;
-      overflow-y: auto;
-      margin-bottom: 10px;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 8px;
+      overflow-x: auto;
+      margin: 5px 0;
+      padding-bottom: 5px;
     }
+
     .playlist-item {
-      padding: 8px;
-      border-bottom: 1px solid #f0f0f0;
+      white-space: nowrap;
+      padding: 6px 10px;
+      border: 1px solid #f0f0f0;
+      border-radius: 4px;
+      background: #f9f9f9;
       cursor: pointer;
       transition: all 0.2s;
     }
@@ -122,13 +137,14 @@
 
     /* 複製按鈕 */
     #copy-button {
-      padding: 10px;
+      padding: 6px 12px;
       background: #0078d7;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       transition: background 0.2s;
+      margin-left: auto;
     }
     #copy-button:hover {
       background: #005fa3;
@@ -138,16 +154,17 @@
 <body>
   <div class="container">
     <h1 class="page-title">🎵 小瑜歌單</h1>
-    <input type="text" id="search" placeholder="搜尋歌曲或標籤...">
+    <input type="text" id="search" placeholder="搜尋歌曲或歌手...">
     <div id="tag-filter"></div>
     <div id="song-list"></div>
+    <div id="playlist">
+      <h2>暫存名單</h2>
+      <div id="playlist-items"></div>
+      <button id="copy-button">複製歌單</button>
+    </div>
   </div>
 
-  <div id="playlist">
-    <h2>暫存名單</h2>
-    <div id="playlist-items"></div>
-    <button id="copy-button">複製歌單</button>
-  </div>
+
 
   <script>
     let allSongs = [];
