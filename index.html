@@ -161,6 +161,26 @@
       border: none;
       border-radius: 6px;
     }
+    #playlist-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 5px;
+    }
+
+    #playlist button {
+      padding: 8px 14px;
+      background: #0078d7;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 16px;
+    }
+
+    #playlist button:hover {
+      background: #005fa3;
+    }
   </style>
 </head>
 <body>
@@ -173,6 +193,7 @@
   <div id="playlist">
     <h2>要點的歌單-點了就會存到剪貼本唷!</h2>
     <div id="playlist-items"></div>
+    <button id="random-button">隨機選歌</button>
     <button id="copy-button">清空歌單</button>
   </div>
 
@@ -312,6 +333,17 @@
       selectedSongs = [];
       renderSongs();
       renderPlaylist();
+    };
+    document.getElementById('random-button').onclick = () => {
+      if (allSongs.length === 0) {
+        alert('歌單還沒載入！');
+        return;
+      }
+      const randomIndex = Math.floor(Math.random() * allSongs.length);
+      const randomSong = allSongs[randomIndex];
+
+      // 彈出視窗
+      alert(`🎵 隨機選到：\n${randomSong.title} - ${randomSong.artist}`);
     };
   </script>
 </body>
