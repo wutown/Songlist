@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>小瑜の歌單</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
@@ -15,39 +16,44 @@
     }
 
     .page-title {
-      font-size: 36px;
+      font-size: 28px;
       font-weight: bold;
-      margin: 20px;
+      margin: 10px;
       color: #222;
       text-align: center;
     }
 
     .container {
       flex: 1;
-      padding: 20px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
     }
 
-    /* 搜尋欄 */
+    /* 搜尋欄 (手機版) */
     #search {
       width: 100%;
-      padding: 20px;
-      font-size: 24px;
+      padding: 12px;
+      font-size: 18px;
       border: 2px solid #ccc;
-      border-radius: 10px;
-      margin-bottom: 20px;
+      border-radius: 8px;
+      margin-bottom: 10px;
     }
 
-    /* 標籤 */
+    /* 標籤 (手機版) */
+    #tag-filter {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
     #tag-filter span {
       display: inline-block;
       background: #FAEAB7;
       color: #80533C;
-      margin: 5px;
-      padding: 10px 20px;
-      border-radius: 25px;
-      font-size: 20px;
+      margin: 4px;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 16px;
       cursor: pointer;
     }
     #tag-filter span.active {
@@ -55,16 +61,15 @@
       color: white;
     }
 
-    /* 歌曲列表 */
+    /* 歌曲列表 (手機版) */
     #song-list {
       flex: 1;
       overflow-y: auto;
       border-top: 2px solid #ddd;
-      margin-top: 10px;
     }
     #song-list div {
-      padding: 20px;
-      font-size: 22px;
+      padding: 12px;
+      font-size: 18px;
       cursor: pointer;
       border-bottom: 1px solid #000;
       color: #000;
@@ -74,7 +79,7 @@
       font-weight: bold;
     }
 
-    /* 固定底部的暫存名單 */
+    /* 固定底部的歌單 */
     #playlist {
       position: fixed;
       bottom: 0;
@@ -82,23 +87,23 @@
       width: 100%;
       background: #fff;
       border-top: 2px solid #ddd;
-      padding: 10px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
       color: #000;
     }
 
     #playlist h2 {
-      margin: 0 0 10px 0;
-      font-size: 22px;
+      margin: 0 0 5px 0;
+      font-size: 18px;
     }
 
     #playlist-items {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
       overflow-y: auto;
-      max-height: 150px;
+      max-height: 120px;
     }
 
     .playlist-item-container {
@@ -108,13 +113,12 @@
 
     .playlist-item {
       white-space: nowrap;
-      padding: 15px 15px;
-      font-size: 20px;
+      padding: 12px 12px;
+      font-size: 16px;
       background: #f9f9f9;
       border: 1px solid #ccc;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
-      position: relative;
       transition: transform 0.2s ease;
     }
 
@@ -123,11 +127,11 @@
       right: 0;
       top: 0;
       height: 100%;
-      width: 80px;
+      width: 70px;
       background: #ff4d4d;
       color: white;
       border: none;
-      font-size: 18px;
+      font-size: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -136,22 +140,21 @@
     }
 
     .show-delete .playlist-item {
-      transform: translateX(-80px);
+      transform: translateX(-70px);
     }
-
     .show-delete .delete-btn {
       transform: translateX(0);
     }
 
     /* 清空按鈕 */
     #copy-button {
-      margin-top: 10px;
-      padding: 15px;
-      font-size: 22px;
+      margin-top: 6px;
+      padding: 10px;
+      font-size: 16px;
       background: #0078d7;
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 6px;
     }
   </style>
 </head>
@@ -264,17 +267,18 @@
         };
 
         addSwipeHandler(container);
-
         container.appendChild(div);
         container.appendChild(deleteBtn);
         playlistEl.appendChild(container);
       });
+
+      copyPlaylistToClipboard();
     }
 
     function addSwipeHandler(container) {
       let startX = 0;
       let currentX = 0;
-      const threshold = 40;
+      const threshold = 30;
 
       container.addEventListener('touchstart', e => {
         startX = e.touches[0].clientX;
@@ -292,6 +296,11 @@
           container.classList.remove('show-delete');
         }
       });
+    }
+
+    function copyPlaylistToClipboard() {
+      const text = selectedSongs.map(song => `${song.title} - ${song.artist}`).join('\n');
+      navigator.clipboard.writeText(text).catch(() => console.log('無法寫入剪貼簿'));
     }
 
     document.getElementById('copy-button').onclick = () => {
