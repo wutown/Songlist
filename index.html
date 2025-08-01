@@ -234,6 +234,11 @@
       tags.forEach(tag => {
         const span = document.createElement('span');
         span.textContent = tag;
+        // 如果是女生歌手的標籤，就改粉紅色
+        if (tag.toLowerCase().includes('female')) {
+          span.style.backgroundColor = '#ffb6c1'; // 粉紅色
+          span.style.color = '#fff';
+        }
         if (selectedTags.includes(tag)) span.classList.add('active');
         span.onclick = () => toggleTag(tag);
         tagFilterEl.appendChild(span);
