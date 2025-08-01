@@ -10,19 +10,21 @@
       background-color: #9ED1E8;
       color: #FFFFFF;
       display: flex;
+      flex-direction: column;
       height: 100vh;
     }
+
     .page-title {
-      font-size: 28px;
+      font-size: 36px;
       font-weight: bold;
-      margin-bottom: 15px;
+      margin: 20px;
       color: #222;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      text-align: center;
     }
-    /* 左側主容器 */
+
     .container {
       flex: 1;
-      padding: 20px 40px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
     }
@@ -30,36 +32,23 @@
     /* 搜尋欄 */
     #search {
       width: 100%;
-      padding: 10px 15px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      outline: none;
-      transition: all 0.2s;
-    }
-    #search:focus {
-      border-color: #0078d7;
-      box-shadow: 0 0 4px rgba(0, 120, 215, 0.3);
+      padding: 20px;
+      font-size: 24px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      margin-bottom: 20px;
     }
 
     /* 標籤 */
-    #tag-filter {
-      margin-bottom: 20px;
-    }
     #tag-filter span {
       display: inline-block;
       background: #FAEAB7;
       color: #80533C;
       margin: 5px;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 20px;
       cursor: pointer;
-      transition: all 0.2s;
-    }
-    #tag-filter span:hover {
-      background: #d0e4ff;
     }
     #tag-filter span.active {
       background: #0078d7;
@@ -70,102 +59,114 @@
     #song-list {
       flex: 1;
       overflow-y: auto;
-      border-top: 1px solid #ddd;
+      border-top: 2px solid #ddd;
       margin-top: 10px;
     }
     #song-list div {
-      padding: 12px;
+      padding: 20px;
+      font-size: 22px;
       cursor: pointer;
       border-bottom: 1px solid #000;
-      transition: all 0.2s;
       color: #000;
-    }
-    #song-list div:hover {
-      background: #f0f8ff;
     }
     #song-list div.selected {
       background: #7A9FCF;
       font-weight: bold;
     }
 
-    /* 固定在畫面底部的暫存名單 */
+    /* 固定底部的暫存名單 */
     #playlist {
       position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
-      background: #ffffff;
-      border-top: 1px solid #ddd;
-      padding: 10px 20px;
+      background: #fff;
+      border-top: 2px solid #ddd;
+      padding: 10px;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
       color: #000;
-      z-index: 999;
     }
 
-    /* 標題縮小 */
     #playlist h2 {
-      margin: 0;
-      font-size: 16px;
-      border-bottom: none;
-      padding-bottom: 4px;
-      color: #444;
+      margin: 0 0 10px 0;
+      font-size: 22px;
     }
 
-    /* 橫向排列暫存歌單 */
     #playlist-items {
       display: flex;
-      flex-wrap: nowrap;
-      gap: 8px;
-      overflow-x: auto;
-      margin: 5px 0;
-      padding-bottom: 5px;
+      flex-direction: column;
+      gap: 5px;
+      overflow-y: auto;
+      max-height: 150px;
+    }
+
+    .playlist-item-container {
+      position: relative;
+      overflow: hidden;
     }
 
     .playlist-item {
       white-space: nowrap;
-      padding: 6px 10px;
-      border: 1px solid #f0f0f0;
-      border-radius: 4px;
+      padding: 15px 15px;
+      font-size: 20px;
       background: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 8px;
       cursor: pointer;
-      transition: all 0.2s;
-    }
-    .playlist-item:hover {
-      background: #ffeaea;
+      position: relative;
+      transition: transform 0.2s ease;
     }
 
-    /* 複製按鈕 */
+    .delete-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      width: 80px;
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translateX(100%);
+      transition: transform 0.2s ease;
+    }
+
+    .show-delete .playlist-item {
+      transform: translateX(-80px);
+    }
+
+    .show-delete .delete-btn {
+      transform: translateX(0);
+    }
+
+    /* 清空按鈕 */
     #copy-button {
-      padding: 6px 12px;
+      margin-top: 10px;
+      padding: 15px;
+      font-size: 22px;
       background: #0078d7;
       color: white;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.2s;
-      margin-left: auto;
-    }
-    #copy-button:hover {
-      background: #005fa3;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
+  <h1 class="page-title">🎵 小瑜の歌單</h1>
   <div class="container">
-    <h1 class="page-title">🎵 小瑜の歌單</h1>
     <input type="text" id="search" placeholder="搜尋歌曲或歌手...">
     <div id="tag-filter"></div>
     <div id="song-list"></div>
-    <div id="playlist">
-      <h2>要點的歌單</h2>
-      <div id="playlist-items"></div>
-      <button id="copy-button">清空歌單</button>
-    </div>
   </div>
-
-
+  <div id="playlist">
+    <h2>要點的歌單</h2>
+    <div id="playlist-items"></div>
+    <button id="copy-button">清空歌單</button>
+  </div>
 
   <script>
     let allSongs = [];
@@ -226,17 +227,11 @@
       } else {
         selectedTags.push(tag);
       }
-      filterByTags();
+      filteredSongs = selectedTags.length === 0
+        ? [...allSongs]
+        : allSongs.filter(song => selectedTags.every(tag => song.tags.includes(tag)));
       renderTags();
       renderSongs();
-    }
-
-    function filterByTags() {
-      if (selectedTags.length === 0) {
-        filteredSongs = [...allSongs];
-      } else {
-        filteredSongs = allSongs.filter(song => selectedTags.every(tag => song.tags.includes(tag)));
-      }
     }
 
     function toggleSong(song) {
@@ -248,49 +243,61 @@
       }
       renderSongs();
       renderPlaylist();
-      copyToTempList();
     }
 
     function renderPlaylist() {
       playlistEl.innerHTML = '';
       selectedSongs.forEach(song => {
+        const container = document.createElement('div');
+        container.classList.add('playlist-item-container');
+
         const div = document.createElement('div');
         div.textContent = `${song.title} - ${song.artist}`;
         div.classList.add('playlist-item');
-        div.onclick = () => toggleSong(song);
-        playlistEl.appendChild(div);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = '刪除';
+        deleteBtn.classList.add('delete-btn');
+        deleteBtn.onclick = () => {
+          selectedSongs = selectedSongs.filter(s => s !== song);
+          renderPlaylist();
+        };
+
+        addSwipeHandler(container);
+
+        container.appendChild(div);
+        container.appendChild(deleteBtn);
+        playlistEl.appendChild(container);
       });
     }
-    
-    async function copyToTempList() {
-      const originalTitle = song => song.title;
-      const originalArtist = song => song.artist;
 
-      // 1. 暫時改成「已複製到剪貼簿！」
-      song => song.title = '已複製到剪貼簿！';
-      song => song.artist = '';
-      renderSongs(); // 重新渲染畫面
+    function addSwipeHandler(container) {
+      let startX = 0;
+      let currentX = 0;
+      const threshold = 40;
 
-      // 2. 複製歌單
-      const text = selectedSongs.map(song => `${song.title} - ${song.artist}`).join('\n');
-      await navigator.clipboard.writeText(text);
+      container.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+      });
 
-      // 3. 等待 1.5 秒
-      await sleep(1500);
+      container.addEventListener('touchmove', e => {
+        currentX = e.touches[0].clientX;
+      });
 
-      // 4. 還原歌名
-      song => song.title = originalTitle;
-      song => song.artist = originalArtist;
-      renderSongs(); // 再次重新渲染
+      container.addEventListener('touchend', () => {
+        const deltaX = currentX - startX;
+        if (deltaX < -threshold) {
+          container.classList.add('show-delete');
+        } else if (deltaX > threshold) {
+          container.classList.remove('show-delete');
+        }
+      });
     }
 
-    function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-      
     document.getElementById('copy-button').onclick = () => {
-      const text = selectedSongs.map(song => `${song.title} - ${song.artist}`).join('\n');
-      //navigator.clipboard.writeText(text).then(() => alert('已複製到剪貼簿！'));
+      selectedSongs = [];
+      renderSongs();
+      renderPlaylist();
     };
   </script>
 </body>
