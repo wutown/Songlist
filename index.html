@@ -222,6 +222,10 @@
       filteredSongs.forEach(song => {
         const div = document.createElement('div');
         div.textContent = `${song.title} - ${song.artist}`;
+        // 如果有 Female Vocal 標籤，改成粉紅色背景
+        if (song.tags.some(tag => tag.toLowerCase().includes('女歌手'))) {
+          div.style.backgroundColor = '#FF98BE'; // 粉紅色
+        }
         if (selectedSongs.includes(song)) div.classList.add('selected');
         div.onclick = () => toggleSong(song);
         songListEl.appendChild(div);
@@ -234,11 +238,6 @@
       tags.forEach(tag => {
         const span = document.createElement('span');
         span.textContent = tag;
-        // 如果是女生歌手的標籤，就改粉紅色
-        if (tag.toLowerCase().includes('female')) {
-          span.style.backgroundColor = '#ffb6c1'; // 粉紅色
-          span.style.color = '#fff';
-        }
         if (selectedTags.includes(tag)) span.classList.add('active');
         span.onclick = () => toggleTag(tag);
         tagFilterEl.appendChild(span);
