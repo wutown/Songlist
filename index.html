@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <title>小瑜歌單</title>
+  <title>小瑜の歌單</title>
   <style>
     body {
       margin: 0;
@@ -153,14 +153,14 @@
 </head>
 <body>
   <div class="container">
-    <h1 class="page-title">🎵 小瑜歌單</h1>
+    <h1 class="page-title">🎵 小瑜の歌單</h1>
     <input type="text" id="search" placeholder="搜尋歌曲或歌手...">
     <div id="tag-filter"></div>
     <div id="song-list"></div>
     <div id="playlist">
-      <h2>暫存名單</h2>
+      <h2>要點的歌單</h2>
       <div id="playlist-items"></div>
-      <button id="copy-button">複製歌單</button>
+      <button id="copy-button">清空歌單</button>
     </div>
   </div>
 
@@ -261,14 +261,27 @@
       });
     }
     
-    function copyToTempList() {
-      const text = selectedSongs.map(song => `${song.title} - ${song.artist}`).join('\n');
-      navigator.clipboard.writeText(text).then(() => alert('已複製到剪貼簿！'));
+    async function copyToTempList() {
+      const SongTitle = song => song.title;
+      const SongArtist = song => song.artist;
+      song => song.title = '已複製到剪貼簿！';
+      song => song.artist = '';
+      const text = selectedSongs.map(`${SongTitle} - ${SongArtist}`).join('\n');
+      //navigator.clipboard.writeText(text).then(() => alert('已複製到剪貼簿！'));
+      navigator.clipboard.writeText(text)
+      await sleep(1500);
+      song => song.title = SongTitle;
+      song => song.artist = SongArtist;
+
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     document.getElementById('copy-button').onclick = () => {
       const text = selectedSongs.map(song => `${song.title} - ${song.artist}`).join('\n');
-      navigator.clipboard.writeText(text).then(() => alert('已複製到剪貼簿！'));
+      //navigator.clipboard.writeText(text).then(() => alert('已複製到剪貼簿！'));
     };
   </script>
 </body>
