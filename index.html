@@ -262,23 +262,31 @@
     }
     
     async function copyToTempList() {
-      const SongTitle = song.title;
-      const SongArtist = artist;
-      song.title = '已複製到剪貼簿！';
-      song.artist = '';
-      const text = selectedSongs.map(`${SongTitle} - ${SongArtist}`).join('\n');
-      //navigator.clipboard.writeText(text).then(() => alert('已複製到剪貼簿！'));
-      navigator.clipboard.writeText(text)
-      await sleep(1500);
-      song.title = SongTitle;
-      song.artist = SongArtist;
+      const originalTitle = song => song.title;
+      const originalArtist = song => song.artist;
 
+      // 1. 暫時改成「已複製到剪貼簿！」
+      song => song.title = '已複製到剪貼簿！';
+      song => song.artist = '';
+      renderSongs(); // 重新渲染畫面
+
+      // 2. 複製歌單
+      const text = selectedSongs.map(song => `${song.title} - ${song.artist}`).join('\n');
+      await navigator.clipboard.writeText(text);
+
+      // 3. 等待 1.5 秒
+      await sleep(1500);
+
+      // 4. 還原歌名
+      song => song.title = originalTitle;
+      song => song.artist = originalArtist;
+      renderSongs(); // 再次重新渲染
     }
 
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
-
+      
     document.getElementById('copy-button').onclick = () => {
       const text = selectedSongs.map(song => `${song.title} - ${song.artist}`).join('\n');
       //navigator.clipboard.writeText(text).then(() => alert('已複製到剪貼簿！'));
